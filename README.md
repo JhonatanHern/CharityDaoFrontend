@@ -1,12 +1,16 @@
-This is a [wagmi](https://wagmi.sh) + [Vite](https://vitejs.dev/) project bootstrapped with [`create-wagmi`](https://github.com/wagmi-dev/wagmi/tree/main/packages/create-wagmi)
+# Charity DAO frontend
 
-# Getting Started
+This UI allows users to interact with the Charity DAO smart contracts (voting, executing proposals, etc)
+
+## Running
+
+This is a [wagmi](https://wagmi.sh) + [Vite](https://vitejs.dev/) project bootstrapped with [`create-wagmi`](https://github.com/wagmi-dev/wagmi/tree/main/packages/create-wagmi)
 
 Run `npm run dev` in your terminal, and then open [localhost:5173](http://localhost:5173) in your browser.
 
 Once the webpage has loaded, changes made to files inside the `src/` directory (e.g. `src/App.tsx`) will automatically update the webpage.
 
-# Learn more
+## Learn more
 
 To learn more about [Vite](https://vitejs.dev/) or [wagmi](https://wagmi.sh), check out the following resources:
 
