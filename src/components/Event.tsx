@@ -7,13 +7,15 @@ import {
 } from "wagmi";
 import Button from "./Button";
 import { ethers } from "ethers";
-import { DAOContractConfig } from "./contracts";
+import {
+  DAOContractConfig,
+  daoTokenContractConfig,
+  paymentTokenContractConfig,
+} from "../utils/contracts";
 
 type EventProps = {
   event: any;
   daoTokenBalance?: any;
-  daoToken?: any;
-  paymentToken?: any;
   userDaoTokenAllowance?: bigint;
   allowanceSettingWrite?: () => void;
   votes?: any[];
@@ -24,8 +26,6 @@ type EventProps = {
 function Event({
   event,
   daoTokenBalance,
-  daoToken,
-  paymentToken,
   userDaoTokenAllowance,
   allowanceSettingWrite,
   votes,
@@ -124,43 +124,51 @@ function Event({
   }
 
   return (
-    <div className="p-4 mx-5 border border-gray-600">
+    <div className="p-4 mx-5 relative rounded bg-[#282828]">
       <p className="text-lg font-bold green-underline">
-        Proposal ID: {event.proposalId}
+        {event.metadata.title}
       </p>
-      <p>Deadline: {event.deadline.toString()}</p>
-      <p>Minimum Votes: {event.minimumVotes}</p>
-      <p>
+      <img src={event.metadata.imageURL} className="w-full h-[200px]" alt="" />
+      <p>{event.metadata.description}</p>
+      <p className="text-xs">Deadline: {event.deadline.toString()}</p>
+      <p className="text-xs">Minimum Votes: {event.minimumVotes}</p>
+      <p className="text-xs">
         Proposed Donation Amount:{" "}
         {ethers.formatUnits(
           event.proposedDonationAmount,
-          paymentToken.decimals
+          paymentTokenContractConfig.decimals
         )}{" "}
-        {paymentToken?.symbol}
+        {paymentTokenContractConfig?.symbol}
       </p>
-      <p>Recipient: {event.recipient}</p>
+      <p className="text-xs">Recipient: {event.recipient}</p>
       {votes && (
         <>
           <br />
-          <p>YES votes: {votes.filter((v) => v.inSupport === "true").length}</p>
-          <p>NO votes: {votes.filter((v) => v.inSupport !== "true").length}</p>
+          <p className="text-xs">
+            YES votes: {votes.filter((v) => v.inSupport === "true").length}
+          </p>
+          <p className="text-xs">
+            NO votes: {votes.filter((v) => v.inSupport !== "true").length}
+          </p>
         </>
       )}
       {event.deadline > new Date() && (
         <>
           <br />
-          <p>Votes to cast:</p>
+          <p className="text-xs">Votes to cast:</p>
           <input
             className="bg-transparent border-white border-2 rounded"
             type="number"
             defaultValue={voteAmount}
             onChange={(e) => setVoteAmount(Number(e.target.value))}
           />
-          <p>
-            Cost of voting: {voteAmount ** 2} {daoToken?.symbol} tokens{" "}
+          <p className="text-xs">
+            Cost of voting: {voteAmount ** 2} {daoTokenContractConfig?.symbol}{" "}
+            tokens{" "}
             {!!daoTokenBalance && (
               <>
-                (current balance {daoTokenBalance.formatted} {daoToken?.symbol})
+                (current balance {daoTokenBalance.formatted}{" "}
+                {daoTokenContractConfig?.symbol})
               </>
             )}
           </p>
@@ -177,11 +185,12 @@ function Event({
               ) : (
                 <>
                   <p>
-                    Allowing the DAO contract to take {daoToken?.symbol} tokens
-                    from your account is necessary before voting
+                    Allowing the DAO contract to take{" "}
+                    {daoTokenContractConfig?.symbol} tokens from your account is
+                    necessary before voting
                   </p>
                   <Button onClick={setAllowance} type="primary">
-                    Allow DAO to take {daoToken?.symbol} tokens
+                    Allow DAO to take {daoTokenContractConfig?.symbol} tokens
                   </Button>
                 </>
               )}

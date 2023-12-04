@@ -21,7 +21,7 @@ export function Connect() {
           .filter((x) => x.ready && x.id !== connector?.id)
           .map((x) => (
             <Button key={x.id} onClick={() => connect({ connector: x })}>
-              {x.name}
+              Connect with {x.name}
               {isLoading && x.id === pendingConnector?.id && " (connecting)"}
             </Button>
           ))}

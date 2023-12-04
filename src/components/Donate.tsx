@@ -8,16 +8,18 @@ import {
 } from "wagmi";
 import Button from "./Button";
 import { ethers } from "ethers";
-import { DAOContractConfig, paymentTokenContractConfig } from "./contracts";
+import {
+  DAOContractConfig,
+  paymentTokenContractConfig,
+  daoTokenContractConfig,
+} from "../utils/contracts";
 
 type DonateProps = {
   daoTokenBalance?: any;
-  daoToken?: any;
-  paymentToken?: any;
   paymentTokenBalance?: any;
 };
 
-function Donate({ daoToken, paymentToken, paymentTokenBalance }: DonateProps) {
+function Donate({ paymentTokenBalance }: DonateProps) {
   const { address } = useAccount();
   const [donationAmount, setDonationAmount] = useState(100);
 
@@ -43,11 +45,14 @@ function Donate({ daoToken, paymentToken, paymentTokenBalance }: DonateProps) {
       donationAmount > 0 &&
       !!allowance &&
       allowance >=
-        BigInt(donationAmount) * BigInt(10) ** BigInt(paymentToken.decimals) &&
+        BigInt(donationAmount) *
+          BigInt(10) ** BigInt(paymentTokenContractConfig.decimals) &&
       (paymentTokenBalance.value || 0) >=
-        BigInt(donationAmount) * BigInt(10) ** BigInt(paymentToken.decimals),
+        BigInt(donationAmount) *
+          BigInt(10) ** BigInt(paymentTokenContractConfig.decimals),
     args: [
-      BigInt(donationAmount) * BigInt(10) ** BigInt(paymentToken.decimals),
+      BigInt(donationAmount) *
+        BigInt(10) ** BigInt(paymentTokenContractConfig.decimals),
     ],
   });
   const donateCall = useContractWrite(config);
@@ -83,10 +88,10 @@ function Donate({ daoToken, paymentToken, paymentTokenBalance }: DonateProps) {
     }
   }, [donateTransactionFinished]);
   return (
-    <div className="inline-block p-4 m-5 border border-gray-600">
+    <div className="inline-block p-4 m-5 rounded bg-[#282828]">
       <p className="text-lg font-bold mb-3 green-underline">
-        Donate {paymentToken?.symbol} to the Charity DAO (you get{" "}
-        {daoToken?.symbol} in return)
+        Donate {paymentTokenContractConfig?.symbol} to the Charity DAO (you get{" "}
+        {daoTokenContractConfig?.symbol} in return)
       </p>
       <div>
         Donation Amount:
@@ -99,8 +104,9 @@ function Donate({ daoToken, paymentToken, paymentTokenBalance }: DonateProps) {
         {(allowance || 0) < donationAmount ? (
           <>
             <p>
-              Allowing the DAO contract to take {paymentToken?.symbol} tokens
-              from your account is necessary before donating
+              Allowing the DAO contract to take{" "}
+              {paymentTokenContractConfig?.symbol} tokens from your account is
+              necessary before donating
             </p>
             <Button onClick={setAllowance} type="primary">
               Set Allowance

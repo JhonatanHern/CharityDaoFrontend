@@ -18,7 +18,7 @@ import {
   daoTokenContractConfig,
   paymentTokenContractConfig,
   DAOContractConfig,
-} from "./components/contracts";
+} from "./utils/contracts";
 import Donate from "./components/Donate";
 import { ethers } from "ethers";
 import { useEffect } from "react";
@@ -33,12 +33,6 @@ export function App() {
   const { data: paymentTokenBalance } = useBalance({
     token: paymentTokenContractConfig.address,
     address,
-  });
-  const { data: daoToken } = useToken({
-    address: daoTokenContractConfig.address,
-  });
-  const { data: paymentToken } = useToken({
-    address: paymentTokenContractConfig.address,
   });
 
   const { data: userDaoTokenAllowance, refetch: userDaoTokenAllowanceRefetch } =
@@ -83,24 +77,33 @@ export function App() {
   }, [allowanceTransactionFinished]);
 
   return (
-    <main className="p-5">
-      <h1 className="bg-red text-3xl font-bold underline">Charity DAO</h1>
-      <Connect />
+    <main className="pb-5 px-[5vw] h-[100vh] overflow-y-auto relative">
+      <header className="flex justify-between mb-4 items-center sticky top-[0] z-10 bg-[#343434]">
+        <div className="flex items-center">
+          <img
+            src="./tech-logo.jpeg"
+            className="inline-block h-14 w-14 rounded-full mx-3"
+          />
+          <h1 className="bg-red text-3xl font-bold inline-block">
+            Charity DAO
+          </h1>
+        </div>
+        <Connect />
+      </header>
 
       {isConnected && (
         <>
           <Account />
-          <h2>
+          <p className="text-sm">
             Funding coin Balance: {paymentTokenBalance?.formatted}{" "}
-            {paymentToken?.symbol}
-          </h2>
-          <h2>
-            DAO coin Balance: {daoTokenBalance?.formatted} {daoToken?.symbol}
-          </h2>
+            {paymentTokenContractConfig?.symbol}
+          </p>
+          <p className="text-sm">
+            DAO coin Balance: {daoTokenBalance?.formatted}{" "}
+            {daoTokenContractConfig?.symbol}
+          </p>
           <Donate
             daoTokenBalance={daoTokenBalance}
-            daoToken={daoToken}
-            paymentToken={paymentToken}
             paymentTokenBalance={paymentTokenBalance}
           />
           <h2 className="text-xl">Active proposals:</h2>
@@ -113,8 +116,6 @@ export function App() {
                     event={event}
                     key={event.proposalId}
                     daoTokenBalance={daoTokenBalance}
-                    daoToken={daoToken}
-                    paymentToken={paymentToken}
                     userDaoTokenAllowance={userDaoTokenAllowance}
                     allowanceSettingWrite={allowanceSettingWrite}
                     votes={events.data.proposalsVoted.filter(
@@ -140,7 +141,6 @@ export function App() {
                   <Event
                     event={event}
                     key={event.proposalId}
-                    paymentToken={paymentToken}
                     votes={events.data.proposalsVoted.filter(
                       (vote: any) => vote.proposalId === event.proposalId
                     )}
@@ -163,7 +163,6 @@ export function App() {
                   <Event
                     event={event}
                     key={event.proposalId}
-                    paymentToken={paymentToken}
                     votes={events.data.proposalsVoted.filter(
                       (vote: any) => vote.proposalId === event.proposalId
                     )}
@@ -174,6 +173,16 @@ export function App() {
           )}
           {events.isLoading && <p>Loading...</p>}
           {events.isError && <p>Load error</p>}
+        </>
+      )}
+      {!isConnected && (
+        <>
+          <h1 className="text-3xl mt-12 mb-5 text-center">
+            Welcome to the Charity DAO
+          </h1>
+          <p className="text-xl text-center">
+            Please connect your wallet to participate
+          </p>
         </>
       )}
     </main>

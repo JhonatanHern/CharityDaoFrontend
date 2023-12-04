@@ -1,17 +1,23 @@
 import { erc20ABI } from "wagmi";
 
 export const paymentTokenContractConfig = {
-  address: "0x9c3598d26D699C4aEe9CF0B82409e8009E8e2387",
+  address: "0x6b85422BC255A67e8A5dC6CccDE7C21f38191BAD",
   abi: erc20ABI,
+  decimals: 18,
+  name: "DAO Payment Token",
+  symbol: "DPT",
 } as const;
 
 export const daoTokenContractConfig = {
-  address: "0x803c5632fF2f38F2e4539AA63c94FC292521039b",
+  address: "0xEC5c996D8638d1170f4662b1f1410eAece4Ec410",
   abi: erc20ABI,
+  decimals: 18,
+  name: "DAO Token",
+  symbol: "DT",
 } as const;
 
 export const DAOContractConfig = {
-  address: "0x501F418B93A6758E2252c1dc86Be3f0617F63FCa",
+  address: "0xe0B810e10420Da732e461db829FFa6349f4ABE80",
   abi: [
     {
       inputs: [
